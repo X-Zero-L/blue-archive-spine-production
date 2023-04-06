@@ -99,15 +99,15 @@ def getModelsList():
     '''
     Return list of Blue Archive characters url path.
     '''
-    data = []
     res_url = getResourceURL()
     res = requests.get(res_url).json()
-    for asset in res["resources"]:
-        if "spinecharacters-" in asset["resource_path"] or "spinelobbies-" in asset["resource_path"] or "spinebackground-" in asset["resource_path"]:
-            # append url and path
-            data.append('/'.join(res_url.split("/")
-                        [0:-1]) + "/" + asset["resource_path"])
-    return data
+    return [
+        '/'.join(res_url.split("/")[:-1]) + "/" + asset["resource_path"]
+        for asset in res["resources"]
+        if "spinecharacters-" in asset["resource_path"]
+        or "spinelobbies-" in asset["resource_path"]
+        or "spinebackground-" in asset["resource_path"]
+    ]
 
 
 def downloadFile(url, fname):
@@ -144,7 +144,7 @@ def extractTexture2D(object, dest):
     # make sure that the extension is correct
     # you probably only want to do so with images/textures
     dest, ext = os.path.splitext(dest)
-    dest = dest + ".png"
+    dest = f"{dest}.png"
 
     img = data.image
     img.save(dest)
@@ -161,11 +161,10 @@ def extractCharacter(src, dest):
             if ".atlas" in data.name or ".skel" in data.name:
                 print(data.name)
                 extractTextAsset(obj, dest)
-        # extract texture
         elif obj.type.name == "Texture2D":
             data = obj.read()
 
-            print(data.name + ".png")
+            print(f"{data.name}.png")
             extractTexture2D(obj, dest)
 
 

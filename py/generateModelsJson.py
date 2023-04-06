@@ -15,9 +15,7 @@ for i in parentDir:
             if j[0] == "_":
                 continue
             data[j[:-5]] = f"assets/spine/{i}/{j}"
-    else:
-        if i[0] == "_":
-            continue
+    elif i[0] != "_":
         data[i] = f"assets/spine/{i}/" + ''.join(file)
 
 """

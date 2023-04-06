@@ -18,8 +18,8 @@ if not (os.path.isdir("./data")):
     os.mkdir("./data")
 
 if __name__ == "__main__":
-    baseUrl = getBaseResourceURL() + '/MediaResources'
-    resUrl = baseUrl + '/MediaCatalog.json'
+    baseUrl = f'{getBaseResourceURL()}/MediaResources'
+    resUrl = f'{baseUrl}/MediaCatalog.json'
     # https://prod-clientpatch.bluearchiveyostar.com/r47_1_22_46zlzvd7mur326newgu8_2 + /MediaResources/MediaCatalog.json
     res = requests.get(resUrl).json()["Table"]
     for asset in res:
@@ -39,11 +39,11 @@ if __name__ == "__main__":
                     continue
                 if not (os.path.isdir("./assets/audio")):
                     os.mkdir("./assets/audio/")
-                downloadFile(baseUrl + "/" + res[asset]["path"], path)
+                downloadFile(f"{baseUrl}/" + res[asset]["path"], path)
                 data[keyEvent] = path
             else:
                 # online ver (cors ?)
-                data[keyEvent] = baseUrl + "/" + res[asset]["path"]
+                data[keyEvent] = f"{baseUrl}/" + res[asset]["path"]
 
     print(data)
     with open("./data/audio.json", "w") as f:
