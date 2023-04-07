@@ -39,15 +39,16 @@ def getModelsList():
     '''
     Return list of Blue Archive characters url path.
     '''
-    data = []
     base_url = getBaseResourceURL()
-    res_url = base_url + '/Android/bundleDownloadInfo.json'
+    res_url = f'{base_url}/Android/bundleDownloadInfo.json'
     res = requests.get(res_url).json()
-    for asset in res["BundleFiles"]:
-        if "spinecharacters-" in asset["Name"] or "spinelobbies-" in asset["Name"] or "spinebackground-" in asset["Name"]:
-            # append url and path
-            data.append(base_url + '/Android/' + asset["Name"])
-    return data
+    return [
+        f'{base_url}/Android/' + asset["Name"]
+        for asset in res["BundleFiles"]
+        if "spinecharacters-" in asset["Name"]
+        or "spinelobbies-" in asset["Name"]
+        or "spinebackground-" in asset["Name"]
+    ]
 
 
 def downloadFile(url, fname):
@@ -84,7 +85,7 @@ def extractTexture2D(object, dest):
     # make sure that the extension is correct
     # you probably only want to do so with images/textures
     dest, ext = os.path.splitext(dest)
-    dest = dest + ".png"
+    dest = f"{dest}.png"
 
     img = data.image
     img.save(dest)
@@ -101,11 +102,10 @@ def extractCharacter(src, dest):
             if ".atlas" in data.name or ".skel" in data.name:
                 print(data.name)
                 extractTextAsset(obj, dest)
-        # extract texture
         elif obj.type.name == "Texture2D":
             data = obj.read()
 
-            print(data.name + ".png")
+            print(f"{data.name}.png")
             extractTexture2D(obj, dest)
 
 
@@ -121,7 +121,7 @@ if __name__ == "__main__":
         os.makedirs("./data")
 
     # There are several ResourceURL to a version
-    ver = getBaseResourceURL() + "/Android/bundleDownloadInfo.json"
+    ver = f"{getBaseResourceURL()}/Android/bundleDownloadInfo.json"
     print(ver)
     if (os.path.isfile("./data/version.txt")):
         with open("./data/version.txt", "r") as f:

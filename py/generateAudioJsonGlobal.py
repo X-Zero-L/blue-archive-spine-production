@@ -22,7 +22,7 @@ if __name__ == "__main__":
     updateBaData()
 
     resUrl = getResourceURL()
-    baseUrl = '/'.join(resUrl.split("/")[0:-1])
+    baseUrl = '/'.join(resUrl.split("/")[:-1])
     res = requests.get(resUrl).json()["resources"]
     for asset in res:
         if "Audio/VOC_JP/" in asset["resource_path"] and "MemorialLobby" in asset["resource_path"]:
@@ -41,11 +41,11 @@ if __name__ == "__main__":
                     continue
                 if not (os.path.isdir("./assets/audio")):
                     os.mkdir("./assets/audio/")
-                downloadFile(baseUrl + "/" + asset["resource_path"], path)
+                downloadFile(f"{baseUrl}/" + asset["resource_path"], path)
                 data[keyEvent] = path
             else:
                 # online ver (cors ?)
-                data[keyEvent] = baseUrl + "/" + asset["resource_path"]
+                data[keyEvent] = f"{baseUrl}/" + asset["resource_path"]
 
     print(data)
     with open("./data/audio.json", "w") as f:
